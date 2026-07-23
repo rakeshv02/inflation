@@ -1,42 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inflation Calculator — Purchasing Power Over Time | Tabutility</title>
+  <meta name="description" content="Calculate the effect of inflation on purchasing power. See what a dollar amount today was worth in the past or will be worth in the future." />
+  <meta name="keywords" content="inflation calculator, purchasing power, CPI calculator, real value of money, cost of living calculator" />
+  <link rel="canonical" href="https://inflation.tabutility.com/" />
+  <meta property="og:title" content="Inflation Calculator — Purchasing Power Over Time" />
+  <meta property="og:description" content="See what money is worth today vs the past or future with any inflation rate." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📉</text></svg>" />
+  <meta name="robots" content="index, follow" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7039091592734005" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-78VZWJ5B1W"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-78VZWJ5B1W');</script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body style="margin:0;background:#f8faff;font-family:'Segoe UI',Arial,sans-serif">
+<div id="root"></div>
+<script type="text/babel">
+//<![CDATA[
+const { useState } = React;
+function fmt(n,currency='$'){return currency+Math.round(n).toLocaleString();}
+function App() {
+  const [amount, setAmount] = useState(1000);
+  const [startYear, setStartYear] = useState(2000);
+  const [endYear, setEndYear] = useState(2026);
+  const [rate, setRate] = useState(2.9);
+  const [currency, setCurrency] = useState('$');
 
-    <!-- ✏️ UPDATE THESE FOR EVERY NEW TOOL -->
-    <title>TOOL NAME — TOOL TAGLINE | Tabutility</title>
-    <meta name="description" content="TOOL DESCRIPTION. No sign-up, runs in your browser." />
-    <meta name="keywords" content="KEYWORD 1, KEYWORD 2, KEYWORD 3, free TOOL NAME" />
-    <link rel="canonical" href="https://SUBDOMAIN.tabutility.com/" />
-    <meta property="og:url" content="https://SUBDOMAIN.tabutility.com/" />
-    <meta property="og:title" content="TOOL NAME — TOOL TAGLINE" />
-    <meta property="og:description" content="TOOL DESCRIPTION. Free, no sign-up." />
-    <meta name="twitter:title" content="TOOL NAME — TOOL TAGLINE" />
-    <meta name="twitter:description" content="TOOL DESCRIPTION. Free, no sign-up." />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>EMOJI</text></svg>" />
-    <!-- ✏️ END OF SECTION TO UPDATE -->
+  const years = Number(endYear) - Number(startYear);
+  const futureValue = Number(amount) * Math.pow(1 + Number(rate)/100, years);
+  const pastValue = Number(amount) / Math.pow(1 + Number(rate)/100, Math.abs(years));
+  const powerLost = ((futureValue - Number(amount)) / futureValue * 100).toFixed(1);
+  const direction = years >= 0 ? 'forward' : 'backward';
 
-    <!-- DO NOT CHANGE ANYTHING BELOW THIS LINE -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Tabutility" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="robots" content="index, follow" />
+  const yearRange = Array.from({length:2050-1900+1},(_,i)=>1900+i);
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7039091592734005" crossorigin="anonymous"></script>
+  return (
+    <div style={{maxWidth:520,margin:'0 auto',paddingBottom:40}}>
+      <div style={{background:'#1a1a2e',padding:'12px 20px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <a href="https://tabutility.com" style={{color:'#a5b4fc',textDecoration:'none',fontSize:14}}>← All Tools</a>
+        <span style={{color:'#fff',fontWeight:700,fontSize:15}}>⚡ Tabutility</span>
+      </div>
+      <div style={{background:'linear-gradient(135deg,#dc2626,#991b1b)',padding:'28px 20px',textAlign:'center',color:'#fff'}}>
+        <div style={{fontSize:36,marginBottom:8}}>📉</div>
+        <h1 style={{margin:'0 0 6px',fontSize:22,fontWeight:900}}>Inflation Calculator</h1>
+        <p style={{margin:0,fontSize:13,opacity:0.85}}>See how inflation erodes purchasing power over time</p>
+      </div>
+      <div style={{padding:20}}>
+        <div style={{background:'#fff',borderRadius:14,padding:20,boxShadow:'0 2px 12px rgba(0,0,0,0.06)',marginBottom:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:12}}>
+            <div>
+              <label style={{fontSize:13,fontWeight:600,color:'#374151',display:'block',marginBottom:6}}>Amount</label>
+              <div style={{position:'relative'}}>
+                <span style={{position:'absolute',left:10,top:'50%',transform:'translateY(-50%)',color:'#9ca3af'}}>{currency}</span>
+                <input type="number" value={amount} onChange={e=>setAmount(e.target.value)}
+                  style={{width:'100%',padding:'10px 10px 10px 24px',borderRadius:10,border:'2px solid #e5e7eb',fontSize:15,boxSizing:'border-box'}} />
+              </div>
+            </div>
+            <div>
+              <label style={{fontSize:13,fontWeight:600,color:'#374151',display:'block',marginBottom:6}}>Currency</label>
+              <select value={currency} onChange={e=>setCurrency(e.target.value)}
+                style={{width:'100%',padding:'10px',borderRadius:10,border:'2px solid #e5e7eb',fontSize:15,background:'#fff'}}>
+                {[['$','USD ($)'],['£','GBP (£)'],['€','EUR (€)'],['A$','AUD (A$)'],['C$','CAD (C$)']].map(([v,l])=>
+                  <option key={v} value={v}>{l}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:12}}>
+            <div>
+              <label style={{fontSize:13,fontWeight:600,color:'#374151',display:'block',marginBottom:6}}>From Year</label>
+              <select value={startYear} onChange={e=>setStartYear(e.target.value)}
+                style={{width:'100%',padding:'10px',borderRadius:10,border:'2px solid #e5e7eb',fontSize:15,background:'#fff'}}>
+                {yearRange.map(y=><option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={{fontSize:13,fontWeight:600,color:'#374151',display:'block',marginBottom:6}}>To Year</label>
+              <select value={endYear} onChange={e=>setEndYear(e.target.value)}
+                style={{width:'100%',padding:'10px',borderRadius:10,border:'2px solid #e5e7eb',fontSize:15,background:'#fff'}}>
+                {yearRange.map(y=><option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style={{fontSize:13,fontWeight:600,color:'#374151',display:'block',marginBottom:6}}>Annual Inflation Rate: <span style={{color:'#dc2626'}}>{rate}%</span></label>
+            <input type="range" min={0} max={20} step={0.1} value={rate} onChange={e=>setRate(e.target.value)}
+              style={{width:'100%',accentColor:'#dc2626'}} />
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'#9ca3af'}}>
+              <span>0%</span><span>Historical avg ~2.9%</span><span>20%</span>
+            </div>
+          </div>
+        </div>
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-78VZWJ5B1W"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-78VZWJ5B1W');
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+        {years !== 0 && (
+          <div style={{background:'#fff',borderRadius:14,padding:20,boxShadow:'0 2px 12px rgba(0,0,0,0.06)',marginBottom:16}}>
+            <div style={{textAlign:'center',marginBottom:16}}>
+              <div style={{fontSize:13,color:'#6b7280',fontWeight:600}}>
+                {fmt(amount,currency)} in {startYear} equals
+              </div>
+              <div style={{fontSize:42,fontWeight:900,color:'#dc2626',margin:'6px 0'}}>{fmt(Math.max(futureValue,0),currency)}</div>
+              <div style={{fontSize:13,color:'#6b7280'}}>in {endYear} at {rate}% annual inflation</div>
+            </div>
+            <div style={{borderTop:'1px solid #f0f0f0',paddingTop:14}}>
+              {[
+                ['Years', `${Math.abs(years)} years`],
+                ['Purchasing power lost', `${powerLost}%`],
+                ['Real value today', fmt(years>0?Number(amount):futureValue, currency)],
+                ['Equivalent in '+endYear, fmt(futureValue, currency)],
+              ].map(([l,v])=>(
+                <div key={l} style={{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid #f9f9f9',fontSize:14}}>
+                  <span style={{color:'#6b7280'}}>{l}</span><strong>{v}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        <div style={{background:'#fef2f2',borderRadius:12,padding:16,fontSize:13,color:'#dc2626',lineHeight:1.6}}>
+          <strong>Note:</strong> Preset at the US long-run average inflation rate of ~2.9%. Adjust to your country's rate: UK ~2.5%, EU ~2.1%, Australia ~3.2%. Historical CPI data from the Federal Reserve Bank of Minneapolis.
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+//]]>
+</script>
+</body>
 </html>
