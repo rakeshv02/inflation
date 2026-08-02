@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+
 Sitemap: https://inflation.tabutility.com/sitemap.xml
